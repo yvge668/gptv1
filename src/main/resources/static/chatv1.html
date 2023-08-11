@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>逐字显示示例</title>
+  <meta charset="UTF-8">
+</head>
+<body>
+<div>
+  <input type="text" id="textInput" placeholder="输入要发送的内容">
+  <button id="sendButton">发送请求</button>
+</div>
+<textarea id="resultTextarea" rows="10" cols="50" readonly></textarea>
+
+<script>
+  // 获取输入框的dom对象
+  const textInput = document.getElementById('textInput');
+  // 发送按钮的dom对象
+  const sendButton = document.getElementById('sendButton');
+  // 文本域的dom对象
+  const resultTextarea = document.getElementById('resultTextarea');
+
+
+  sendButton.addEventListener('click', async () => {
+    try {
+      const content = encodeURIComponent(textInput.value.trim());//获取输入框中的文本
+
+      const response = await fetch(`/streamChatWithWeb?content=${content}`);//1.将文本放入参数2.发送请求取得响应对象response
+
+      if (!response.ok) {//判断响应是否为成功,如果不成功则报错
+        throw new Error('请求失败');
+      }
+
+      //能走到这里说明响应已经成功了
+
+
+      const decoder = new TextDecoder('utf-8');//创建一个文本解码器对象
+      const reader = response.body.getReader();
+      let result = '';//文本域一开始的内容为空
+
+      while (true) {
+        /*
+        * done —— 当读取完成时为 true，否则为 false
+        * value —— 字节的类型化数组：Uint8Array。
+        * */
+        const { done, value } = await reader.read();    //await-->等候的意思
+
+        //done true  false
+        if (done) {//读取完,退出循环
+          break;
+        }
+
+
+        // value  55 33 99
+        // 将流数据解码为文本
+        const text = decoder.decode(value);//返回的是一个数组
+
+        console.log(text);//在控制台观察流
+
+        // 逐字追加到文本域并延时显示
+        for (let i = 0; i < text.length; i++) {
+          result += text[i];
+          resultTextarea.value = result;
+          await new Promise(resolve => setTimeout(resolve, 50)); // 调整延时时间
+        }
+      }
+
+    } catch (error) {
+      console.error('发生错误:', error);
+    }
+  });
+</script>
+</body>
+</html>

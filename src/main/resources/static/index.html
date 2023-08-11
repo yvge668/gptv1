@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #chat-container {
+            width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #message-area {
+            width: 100%;
+            height: 300px;
+            margin-top: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+<body>
+<div id="chat-container">
+    <!--输入框-->
+    <input type="text" id="input-field" placeholder="输入内容">
+
+    <!--按钮-->
+    <button id="send-button">发送</button>
+
+    <!--文本域-->
+    <div id="message-area"></div>
+</div>
+
+<script>
+    /*输入框对象*/
+    const inputField = document.getElementById("input-field");
+
+    /*按钮对象*/
+    const sendButton = document.getElementById("send-button");
+
+    /*文本域对象*/
+    const messageArea = document.getElementById("message-area");
+
+    sendButton.addEventListener("click", async () => {
+        const content = inputField.value.trim();//获取输入框中的值
+
+        if (!content) return;
+
+        try {
+            const response = await fetch(`/chatTest?content=${content}`, {
+                method: "POST",
+                headers: {//请求头
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            });
+
+            if (response.ok) {
+                const responseData = await response.text();
+                /*渲染提问的文本*/
+                messageArea.innerHTML += `<p><strong>You:</strong> ${content}</p>`;
+
+                /*渲染回答的文本*/
+                messageArea.innerHTML += `<p><strong>Bot:</strong> ${responseData}</p>`;
+
+                /*清空输入框*/
+                inputField.value = "";
+
+
+                messageArea.scrollTop = messageArea.scrollHeight;
+
+
+            } else {
+                console.error("Failed to send message.");
+            }
+        } catch (error) {
+            console.error("An error occurred:", error);
+        }
+    });
+</script>
+</body>
+</html>
