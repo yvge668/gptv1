@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Example</title>
+</head>
+<body>
+<button id="connectButton">建立WebSocket连接</button>
+<div id="messages"></div>
+
+<script>
+    const connectButton = document.getElementById('connectButton');
+    const messagesDiv = document.getElementById('messages');
+    let socket;
+
+    connectButton.addEventListener('click', () => {
+        if (!socket || socket.readyState !== WebSocket.OPEN) {
+            socket = new WebSocket('ws://localhost:8080/ws');
+
+            socket.onopen = (event) => {
+                console.log('WebSocket连接已建立');
+                connectButton.disabled = true;
+            };
+
+            socket.onmessage = (event) => {
+                const receivedMessage = event.data;
+                console.log('收到服务器消息:', receivedMessage);
+
+                const messageElement = document.createElement('p');
+                messageElement.textContent = receivedMessage;
+                messagesDiv.appendChild(messageElement);
+            };
+
+            socket.onclose = (event) => {
+                console.log('WebSocket连接已关闭');
+                connectButton.disabled = false;
+            };
+        }
+    });
+</script>
+</body>
+</html>

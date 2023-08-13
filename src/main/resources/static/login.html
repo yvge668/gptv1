@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            height: 100%;
+        }
+        body {
+            height: 100%;
+        }
+        .container {
+            height: 100%;
+            background-image: linear-gradient(to right, #fbc2eb, #a6c1ee);
+        }
+        .login-wrapper {
+            background-color: #fff;
+            width: 358px;
+            height: 588px;
+            border-radius: 15px;
+            padding: 0 50px;
+            position: relative;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .header {
+            font-size: 38px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 200px;
+        }
+        .input-item {
+            display: block;
+            width: 100%;
+            margin-bottom: 20px;
+            border: 0;
+            padding: 10px;
+            border-bottom: 1px solid rgb(128, 125, 125);
+            font-size: 15px;
+            outline: none;
+        }
+        .input-item::placeholder {
+            text-transform: uppercase;
+        }
+        .btn {
+            text-align: center;
+            padding: 10px;
+            width: 100%;
+            margin-top: 40px;
+            background-image: linear-gradient(to right, #a6c1ee, #fbc2eb);
+            color: #fff;
+        }
+        .msg {
+            text-align: center;
+            line-height: 88px;
+        }
+        a {
+            text-decoration-line: none;
+            color: #abc1ee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-wrapper">
+            <div class="header">Login</div>
+            <div class="form-wrapper">
+                <input type="text" name="username" placeholder="username" class="input-item" id="username">
+                <input type="password" name="password" placeholder="password" class="input-item" id="password">
+                <div class="btn" id="login">Login</div>
+            </div>
+            <div class="msg">
+                Don't have account?
+                <a href="#">Sign up</a>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    // 获取输入框的dom对象
+    const usernameDom = document.getElementById('username');
+
+    // 文本域的dom对象
+    const passwordDom = document.getElementById('password');
+
+    // 发送按钮的dom对象
+    const loginDom = document.getElementById('login');
+
+
+    loginDom.addEventListener('click', async () => {
+
+        const username =encodeURIComponent(usernameDom.value.trim());//获取输入框中的文本
+        const password =encodeURIComponent(passwordDom.value.trim());//获取输入框中的密码
+
+
+
+        var config = {
+            method: 'post',
+            url: '/login?id='+username+'&password='+password
+        };
+
+        axios(config)
+            .then(function (response) {//成功接到响应
+                console.log(JSON.stringify(response.data));
+
+                let data = response.data.data;
+                console.log(data);
+                if (data==="登陆成功"){
+                    window.location.href="http://www.baidu.com"
+                }
+
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+
+    })
+
+
+
+
+
+
+</script>
+</html>

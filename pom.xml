@@ -33,10 +33,15 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
+        <dependency><!--chatGPT 第三方依赖-->
             <groupId>io.github.asleepyfish</groupId>
             <artifactId>chatgpt</artifactId>
             <version>1.3.2</version>
+        </dependency>
+
+        <dependency><!--WebSocket  依赖-->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
     </dependencies>
 

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Example</title>
+</head>
+<body>
+<h1>WebSocket Example</h1>
+
+<button id="connectButton">Connect</button>
+<button id="disconnectButton" disabled>Disconnect</button>
+<button id="sendButton" disabled>Send</button>
+<input type="text" id="inputMessage" placeholder="Enter your message" disabled>
+
+<div>
+    <textarea id="messageLog" rows="10" cols="50" readonly></textarea>
+</div>
+
+<script>
+    const connectButton = document.getElementById('connectButton');
+    const disconnectButton = document.getElementById('disconnectButton');
+    const sendButton = document.getElementById('sendButton');
+    const inputMessage = document.getElementById('inputMessage');
+    const messageLog = document.getElementById('messageLog');
+
+    let ws = null;
+
+    connectButton.addEventListener('click', () => {
+        ws = new WebSocket('ws://127.0.0.1:8080/ws');
+
+        ws.addEventListener('open', () => {
+            connectButton.disabled = true;
+            disconnectButton.disabled = false;
+            sendButton.disabled = false;
+            inputMessage.disabled = false;
+            logMessage('Connected to WebSocket');
+        });
+
+        ws.addEventListener('message', event => {
+            logMessage('Received: ' + event.data);
+        });
+
+        ws.addEventListener('close', () => {
+            connectButton.disabled = false;
+            disconnectButton.disabled = true;
+            sendButton.disabled = true;
+            inputMessage.disabled = true;
+            logMessage('Connection closed');
+        });
+    });
+
+    disconnectButton.addEventListener('click', () => {
+        if (ws) {
+            ws.close();
+        }
+    });
+
+    sendButton.addEventListener('click', () => {
+        const message = inputMessage.value;
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(message);
+            logMessage('Sent: ' + message);
+        }
+    });
+
+    function logMessage(message) {
+        messageLog.value += message + '\n';
+    }
+</script>
+</body>
+</html>

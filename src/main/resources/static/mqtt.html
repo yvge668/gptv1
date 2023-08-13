@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MQTT Subscription Example</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+</head>
+<body>
+<h1>MQTT Subscription Example</h1>
+<p id="message"></p>
+
+<script>
+    // 连接到MQTT服务器
+    var client = mqtt.connect('mqtt://127.0.0.1');
+
+    // 订阅主题
+    client.on('connect', function () {
+        client.subscribe('topic'); // 替换为你要订阅的主题
+    });
+
+    // 接收消息
+    client.on('message', function (topic, message) {
+        // 在页面上显示收到的消息
+        document.getElementById('message').textContent = message.toString();
+    });
+</script>
+</body>
+</html>
